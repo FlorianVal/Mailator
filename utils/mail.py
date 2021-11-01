@@ -110,7 +110,7 @@ class MailHandler(object):
     @__usageMeasurement
     def __GetMailsFromInbox(self, mail_address):
 
-        url = f"https://privatix-temp-mail-v1.p.rapidapi.com/request/mail/id/{hashlib.md5(mail_address.encode()).hexdigest()}/"
+        url = self.config.get("ApiUrl") + f"/request/mail/id/{hashlib.md5(mail_address.encode()).hexdigest()}/"
 
         headers = {
             'x-rapidapi-host': self.config.get("ApiHost"),
@@ -191,7 +191,7 @@ class MailHandler(object):
 
     @__usageMeasurement
     def __deleteMail(self, mail_id):
-        url = f"https://privatix-temp-mail-v1.p.rapidapi.com/request/delete/id/{mail_id}/"
+        url = self.config.get("ApiUrl") + f"/request/delete/id/{mail_id}/"
 
         headers = {
             'x-rapidapi-host': self.config.get("ApiHost"),
