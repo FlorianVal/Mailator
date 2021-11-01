@@ -1,0 +1,6 @@
+flask
+requests
+requests_html
+bs4
+pyyaml
+names

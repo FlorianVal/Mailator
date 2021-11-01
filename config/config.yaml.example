@@ -1,0 +1,17 @@
+Mail:
+  ApiUrl: https://privatix-temp-mail-v1.p.rapidapi.com
+  ApiKey: 
+  ApiHost: privatix-temp-mail-v1.p.rapidapi.com
+  DomainRenewalTime: 36000
+  AddressHandlingTime: 1800
+  GetMailRetryTime: 5
+  MaxRetry: 3
+  DeleteMailOnDrop: True
+  TestedDomain: ['']
+Web:
+  Urls: [""]
+  Form:
+    FirstName: ""
+    LastName: ""
+    Mail0: ""
+    Mail1: ""
