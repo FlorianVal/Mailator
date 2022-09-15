@@ -75,6 +75,11 @@ class MailHandler(object):
 
         logging.info(f"Response : {response.status_code}, {response.text}")
 
+        domains_list = list(set(ast.literal_eval(response.text)) & set(self.config.get("TestedDomain")))
+        if domains_list == []:
+            logging.error(f"No domain found and tested. falling back to non tested domains\n From Api : {response.text}, tested domains : {self.config.get('TestedDomain')}")
+            domains_list = list(set(ast.literal_eval(response.text)))
+
         self.domains = {"domains_list": list(set(ast.literal_eval(response.text)) & set(self.config.get("TestedDomain"))),
                         "last_checked": datetime.now()}
 
@@ -141,8 +146,31 @@ class MailHandler(object):
             retry += 1
         if last_mail is None:
             raise TimeoutError("No email found in inbox")
+        self.ApproveDomain(mail_address)
         return last_mail
-            
+    
+    def _RemoveDuplicates(list_to_check):
+        return list(set(list_to_check))
+
+    def ApproveDomain(self, mail_address):
+        """Add domain to tested domain list and write it to config file
+
+        Args:
+            mail_address (string): mail address to approve
+        """
+        domain = "@" + mail_address.split("@")[1]
+        if domain not in self.config.get("TestedDomain"):
+
+            with open('../config/config.yaml') as yaml_data_file:
+                full_config = yaml.load(yaml_data_file, Loader=yaml.FullLoader)
+
+            full_config.get("Mail").get("TestedDomain").append(domain)
+            full_config["Mail"]["TestedDomain"] = self._RemoveDuplicates(full_config.get("Mail").get("TestedDomain"))
+            with open('config/config.yaml', 'w') as yaml_data_file:
+                yaml.dump({"Mail": self.config}, yaml_data_file)
+            self.__getDomainsList()
+            logging.info(f"Domain approved : {domain}")
+
     def GetLastMail(self, mail_address):
         """Get last mail from an inbox
 
