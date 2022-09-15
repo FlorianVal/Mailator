@@ -76,7 +76,7 @@ class MailHandler(object):
         logging.info(f"Response : {response.status_code}, {response.text}")
 
         domains_list = list(set(ast.literal_eval(response.text)) & set(self.config.get("TestedDomain")))
-        if domains_list == []:
+        if domains_list == [] or domains_list is None:
             logging.error(f"No domain found and tested. falling back to non tested domains\n From Api : {response.text}, tested domains : {self.config.get('TestedDomain')}")
             domains_list = list(set(ast.literal_eval(response.text)))
 
