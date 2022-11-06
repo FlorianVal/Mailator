@@ -10,6 +10,5 @@ RUN pip install -r requirements.txt
 COPY app.py app.py
 COPY utils utils
 COPY config config
-COPY logs logs
 
 CMD ["python3" "-m" "flask" "run" "--host=0.0.0.0"]
