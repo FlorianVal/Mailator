@@ -80,7 +80,7 @@ class MailHandler(object):
             logging.error(f"No domain found and tested. falling back to non tested domains\n From Api : {response.text}, tested domains : {self.config.get('TestedDomain')}")
             domains_list = list(set(ast.literal_eval(response.text)))
 
-        self.domains = {"domains_list": list(set(ast.literal_eval(response.text)) & set(self.config.get("TestedDomain"))),
+        self.domains = {"domains_list": domains_list,
                         "last_checked": datetime.now()}
 
         return "Domain"
