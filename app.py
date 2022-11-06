@@ -15,14 +15,16 @@ app = Flask(__name__)
 mail_handler = MailHandler.getInstance()
 web_scraper = webScrap.getInstance()
 
+
 @app.route("/")
 def getMail():
 
     address = mail_handler.GetRandomMailAddress()
-    status = web_scraper.submitForms(address) 
+    web_scraper.submitForms(address)
     last_mail = mail_handler.WaitForMail(address)
 
     return mail_handler.HtmlFromMail(last_mail)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
