@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7-alpine
 
 WORKDIR /app
 
@@ -9,6 +9,5 @@ RUN pip install -r requirements.txt
 # Copy source code
 COPY app.py app.py
 COPY utils utils
-COPY config config
 
-CMD ["python3" "-m" "flask" "run" "--host=0.0.0.0"]
+CMD python3 -m flask run --host=0.0.0.0
