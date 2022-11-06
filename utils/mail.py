@@ -6,7 +6,7 @@ import random
 import ast
 import hashlib
 import time
-
+import os
 from datetime import datetime
 
 import json
@@ -36,8 +36,9 @@ class MailHandler(object):
 
     def __usageMeasurement(func):
         def Measurement(self, *args):
+            LogsUsagePath = "logs/UsageLogs.log"
             try:
-                with open("logs/UsageLogs.log", "r") as stream:
+                with open(LogsUsagePath, "r") as stream:
                     data = stream.read()
                 self.measurements = json.loads(data)
             except FileNotFoundError:
@@ -51,9 +52,10 @@ class MailHandler(object):
             else:
                 self.measurements = {out: 1}
             logging.info(f"Usage metrics : {self.measurements}")
-
-            with open("logs/UsageLogs.log", "w") as stream:
-                 stream.write(json.dumps(self.measurements))
+            if not os.path.exists(LogsUsagePath):
+                os.makedirs(os.path.dirname(LogsUsagePath), exist_ok=True)
+            with open(LogsUsagePath, "w") as stream:
+                stream.write(json.dumps(self.measurements))
 
             return out
         return Measurement
@@ -149,7 +151,7 @@ class MailHandler(object):
         self.ApproveDomain(mail_address)
         return last_mail
     
-    def _RemoveDuplicates(list_to_check):
+    def _RemoveDuplicates(self, list_to_check):
         return list(set(list_to_check))
 
     def ApproveDomain(self, mail_address):
@@ -161,11 +163,12 @@ class MailHandler(object):
         domain = "@" + mail_address.split("@")[1]
         if domain not in self.config.get("TestedDomain"):
 
-            with open('../config/config.yaml') as yaml_data_file:
+            with open('config/config.yaml') as yaml_data_file:
                 full_config = yaml.load(yaml_data_file, Loader=yaml.FullLoader)
 
             full_config.get("Mail").get("TestedDomain").append(domain)
-            full_config["Mail"]["TestedDomain"] = self._RemoveDuplicates(full_config.get("Mail").get("TestedDomain"))
+            full_config["Mail"]["TestedDomain"] = self._RemoveDuplicates(
+                full_config.get("Mail").get("TestedDomain"))
             with open('config/config.yaml', 'w') as yaml_data_file:
                 yaml.dump({"Mail": self.config}, yaml_data_file)
             self.__getDomainsList()
