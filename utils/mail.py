@@ -180,7 +180,7 @@ class MailHandler(object):
             full_config["Mail"]["TestedDomain"] = self._RemoveDuplicates(
                 full_config.get("Mail").get("TestedDomain"))
             with open('config/config.yaml', 'w') as yaml_data_file:
-                yaml.dump({"Mail": self.config}, yaml_data_file)
+                yaml.dump(full_config, yaml_data_file)
             self.__getDomainsList()
             logging.info(f"Domain approved : {domain}")
 
