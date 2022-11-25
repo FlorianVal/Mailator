@@ -183,6 +183,8 @@ class MailHandler(object):
                 yaml.dump(full_config, yaml_data_file)
             self.__getDomainsList()
             logging.info(f"Domain approved : {domain}")
+        # Update config
+        self.__getConfig()
 
     def GetLastMail(self, mail_address):
         """Get last mail from an inbox
