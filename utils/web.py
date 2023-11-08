@@ -29,8 +29,7 @@ class webScrap(object):
 
     def __getConfig(self):
         with open('config/config.yaml') as yaml_data_file:
-            self.config = yaml.load(
-                yaml_data_file, Loader=yaml.FullLoader).get("Web")
+            self.config = yaml.safe_load(yaml_data_file).get("Web")
 
     def __newSession(self):
         self.session = HTMLSession()

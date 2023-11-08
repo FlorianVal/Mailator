@@ -7,7 +7,7 @@ from utils.mail import MailHandler
 from utils.web import webScrap
 
 with open('config/log_config.yaml', 'r') as stream:
-    config = yaml.load(stream, Loader=yaml.FullLoader)
+    config = yaml.safe_load(stream)
 logging.config.dictConfig(config)
 
 

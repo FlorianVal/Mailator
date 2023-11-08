@@ -60,8 +60,7 @@ class MailHandler(object):
 
     def __getConfig(self):
         with open('config/config.yaml') as yaml_data_file:
-            self.config = yaml.load(
-                yaml_data_file, Loader=yaml.FullLoader).get("Mail")
+            self.config = yaml.safe_load(yaml_data_file).get("Mail")
 
     @__usageMeasurement
     def __getDomainsList(self):
