@@ -1,5 +1,6 @@
 import requests
 import yaml
+import logging
 
 
 class NotificationManager:
@@ -50,4 +51,5 @@ class NotificationManager:
             ntfy_url = self.config.get("NtfyUrl")
             topic = self.config.get("NtfyTopic")
             complete_url = f"{ntfy_url}/{topic}"
+            logging.info(f"Sending notification to {complete_url}")
             requests.post(complete_url, data=message, timeout=5)

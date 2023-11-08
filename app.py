@@ -11,7 +11,7 @@ from utils.web import webScrap
 with open("config/log_config.yaml", "r") as stream:
     config = yaml.safe_load(stream)
 logging.config.dictConfig(config)
-
+logging.info(f"Starting app with config : {config}")
 
 app = Flask(__name__)
 mail_handler = MailHandler.getInstance()
