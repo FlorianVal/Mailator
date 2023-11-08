@@ -1,12 +1,14 @@
 import logging
-import yaml
 import logging.config
 
+import yaml
 from flask import Flask
+
 from utils.mail import MailHandler
+from utils.notifications import NotificationManager
 from utils.web import webScrap
 
-with open('config/log_config.yaml', 'r') as stream:
+with open("config/log_config.yaml", "r") as stream:
     config = yaml.safe_load(stream)
 logging.config.dictConfig(config)
 
@@ -29,4 +31,5 @@ def getMail():
 
 if __name__ == "__main__":
     from waitress import serve
+
     serve(app, host="0.0.0.0", port=5000)
