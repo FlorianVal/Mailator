@@ -17,5 +17,6 @@ Web:
     Mail1: ""
 Notifications:
   notifications_enabled: true
+  log_user: false
   NtfyUrl: ""
   NtfyTopic: ""
