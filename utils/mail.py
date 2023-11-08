@@ -173,7 +173,7 @@ class MailHandler(object):
         if domain not in self.config.get("TestedDomain"):
 
             with open('config/config.yaml') as yaml_data_file:
-                full_config = yaml.load(yaml_data_file, Loader=yaml.FullLoader)
+                full_config = yaml.safe_load(yaml_data_file)
 
             full_config.get("Mail").get("TestedDomain").append(domain)
             full_config["Mail"]["TestedDomain"] = self._RemoveDuplicates(
