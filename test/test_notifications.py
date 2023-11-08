@@ -51,7 +51,7 @@ class TestNotificationManager(unittest.TestCase):
 
             manager.send_notification("Test message")
             mock_post.assert_not_called()
-    
+
     def test_no_patch_notification(self):
         with patch(
             "builtins.open",
@@ -82,8 +82,31 @@ class TestNotificationManager(unittest.TestCase):
         ):
             with self.assertRaises(ValueError):
                 manager = NotificationManager.getInstance(reload_config=True)
-                manager.send_notification()
+                manager.send_notification("Missing argument message")
             mock_post.assert_not_called()
+
+    @patch("requests.post")
+    def test_error_missing_argument_not_enabled(self, mock_post):
+        """
+        If notifications are not enabled, no error should be raised when missing arguments
+        """
+        with patch(
+            "builtins.open",
+            mock_open(
+                # Missing NtfyUrl
+                read_data="""
+                Notifications:
+                    notifications_enabled: false
+                    NtfyTopic: 'test_topic_push_v111'
+                """
+            ),
+        ):
+            manager = NotificationManager.getInstance(reload_config=True)
+            manager.send_notification(
+                "Missing argument message but message not enabled"
+            )
+            mock_post.assert_not_called()
+
 
 # Run the tests
 if __name__ == "__main__":

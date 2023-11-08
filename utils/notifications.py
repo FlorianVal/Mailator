@@ -30,18 +30,19 @@ class NotificationManager:
             if (
                 "Notifications" not in yaml_content
                 or yaml_content.get("Notifications") is None
-                or not all(
-                    key in yaml_content.get("Notifications")
-                    for key in self._required_config_keys
-                )
+                or "notifications_enabled" not in yaml_content.get("Notifications")
             ):
                 raise ValueError(
-                    f"Invalid config file {self.config_path}. Missing keys {self._required_config_keys}"
+                    f"Invalid config file {self.config_path}. Missing Notifications section or notifications_enabled key"
                 )
             return yaml_content.get("Notifications")
 
     def send_notification(self, message):
         if self.config.get("notifications_enabled", False):
+            if not all(key in self.config for key in self._required_config_keys):
+                raise ValueError(
+                    f"Invalid config file {self.config_path}. Missing keys {self._required_config_keys}"
+                )
             ntfy_url = self.config.get("NtfyUrl")
             topic = self.config.get("NtfyTopic")
             complete_url = f"{ntfy_url}/{topic}"
