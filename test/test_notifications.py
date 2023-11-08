@@ -1,30 +1,30 @@
 import unittest
-from unittest.mock import mock_open, patch, MagicMock
+from unittest.mock import MagicMock, mock_open, patch
 
 from utils.notifications import NotificationManager
 
+
 class MockRequest:
-    remote_addr = '123.123.123.123'
-    user_agent = MagicMock(string='MockAgent/1.0')
+    remote_addr = "123.123.123.123"
+    user_agent = MagicMock(string="MockAgent/1.0")
+
 
 class TestNotificationManager(unittest.TestCase):
-
     def setUp(self):
         self.mock_request = MockRequest()
 
     @patch("requests.post")
     def test_send_notification(self, mock_post):
+        config_data = """
+        Notifications:
+            notifications_enabled: true
+            NtfyUrl: 'http://ntfy.sh'
+            NtfyTopic: 'test_topic_push_v111'
+            AppName: 'Test App send notification'
+        """
         with patch(
             "builtins.open",
-            mock_open(
-                read_data="""
-                Notifications:
-                    notifications_enabled: true
-                    NtfyUrl: 'http://ntfy.sh'
-                    NtfyTopic: 'test_topic_push_v111'
-                    AppName: 'Test App send notification'
-                """
-            ),
+            mock_open(read_data=config_data),
         ):
             # Setup the singleton instance
             manager = NotificationManager.getInstance(reload_config=True)
@@ -43,16 +43,15 @@ class TestNotificationManager(unittest.TestCase):
 
     @patch("requests.post")
     def test_no_notification_sent_when_disabled(self, mock_post):
+        config_data = """
+        Notifications:
+            notifications_enabled: false
+            NtfyUrl: 'http://ntfy.sh'
+            NtfyTopic: 'test_topic_push_v111'
+        """
         with patch(
             "builtins.open",
-            mock_open(
-                read_data="""
-                Notifications:
-                    notifications_enabled: false
-                    NtfyUrl: 'http://ntfy.sh'
-                    NtfyTopic: 'test_topic_push_v111'
-                """
-            ),
+            mock_open(read_data=config_data),
         ):
             manager = NotificationManager.getInstance(reload_config=True)
 
@@ -60,32 +59,29 @@ class TestNotificationManager(unittest.TestCase):
             mock_post.assert_not_called()
 
     def test_no_patch_notification(self):
+        config_data = """
+        Notifications:
+            notifications_enabled: true
+            NtfyUrl: 'http://ntfy.sh'
+            NtfyTopic: 'test_topic_push_v111'
+        """
         with patch(
             "builtins.open",
-            mock_open(
-                read_data="""
-                Notifications:
-                    notifications_enabled: true
-                    NtfyUrl: 'http://ntfy.sh'
-                    NtfyTopic: 'test_topic_push_v111'
-                """
-            ),
+            mock_open(read_data=config_data),
         ):
             manager = NotificationManager.getInstance(reload_config=True)
             manager.send_notification("Test message")
 
     @patch("requests.post")
     def test_error_missing_argument(self, mock_post):
+        config_data = """
+        Notifications:
+            notifications_enabled: true
+            NtfyTopic: 'test_topic_push_v111'
+        """
         with patch(
             "builtins.open",
-            mock_open(
-                # Missing NtfyUrl
-                read_data="""
-                Notifications:
-                    notifications_enabled: true
-                    NtfyTopic: 'test_topic_push_v111'
-                """
-            ),
+            mock_open(read_data=config_data),
         ):
             with self.assertRaises(ValueError):
                 manager = NotificationManager.getInstance(reload_config=True)
@@ -97,16 +93,14 @@ class TestNotificationManager(unittest.TestCase):
         """
         If notifications are not enabled, no error should be raised when missing arguments
         """
+        config_data = """
+        Notifications:
+          notifications_enabled: false
+          NtfyTopic: 'test_topic_push_v111'
+        """
         with patch(
             "builtins.open",
-            mock_open(
-                # Missing NtfyUrl
-                read_data="""
-                Notifications:
-                    notifications_enabled: false
-                    NtfyTopic: 'test_topic_push_v111'
-                """
-            ),
+            mock_open(read_data=config_data),
         ):
             manager = NotificationManager.getInstance(reload_config=True)
             manager.send_notification(
@@ -123,12 +117,14 @@ class TestNotificationManager(unittest.TestCase):
           NtfyUrl: 'http://ntfy.sh'
           NtfyTopic: 'test_topic'
         """
-        with patch('builtins.open', mock_open(read_data=config_data)):
+        with patch("builtins.open", mock_open(read_data=config_data)):
             manager = NotificationManager.getInstance(reload_config=True)
             manager.send_notification("Route called", self.mock_request)
             mock_post.assert_called_once()
             call_args = mock_post.call_args
-            expected_message = "Route called from IP 123.123.123.123 using MockAgent/1.0"
+            expected_message = (
+                "Route called from IP 123.123.123.123 using MockAgent/1.0"
+            )
             self.assertIn(expected_message, call_args[1]["data"])
 
     @patch("requests.post")
@@ -140,7 +136,7 @@ class TestNotificationManager(unittest.TestCase):
           NtfyUrl: 'http://ntfy.sh'
           NtfyTopic: 'test_topic'
         """
-        with patch('builtins.open', mock_open(read_data=config_data)):
+        with patch("builtins.open", mock_open(read_data=config_data)):
             manager = NotificationManager.getInstance(reload_config=True)
             manager.send_notification("Route called", self.mock_request)
             mock_post.assert_called_once()
