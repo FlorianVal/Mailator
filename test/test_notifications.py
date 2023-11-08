@@ -1,10 +1,17 @@
 import unittest
-from unittest.mock import mock_open, patch
+from unittest.mock import mock_open, patch, MagicMock
 
 from utils.notifications import NotificationManager
 
+class MockRequest:
+    remote_addr = '123.123.123.123'
+    user_agent = MagicMock(string='MockAgent/1.0')
 
 class TestNotificationManager(unittest.TestCase):
+
+    def setUp(self):
+        self.mock_request = MockRequest()
+
     @patch("requests.post")
     def test_send_notification(self, mock_post):
         with patch(
@@ -106,6 +113,39 @@ class TestNotificationManager(unittest.TestCase):
                 "Missing argument message but message not enabled"
             )
             mock_post.assert_not_called()
+
+    @patch("requests.post")
+    def test_send_notification_with_user_logging_enabled(self, mock_post):
+        config_data = """
+        Notifications:
+          notifications_enabled: true
+          log_user: true
+          NtfyUrl: 'http://ntfy.sh'
+          NtfyTopic: 'test_topic'
+        """
+        with patch('builtins.open', mock_open(read_data=config_data)):
+            manager = NotificationManager.getInstance(reload_config=True)
+            manager.send_notification("Route called", self.mock_request)
+            mock_post.assert_called_once()
+            call_args = mock_post.call_args
+            expected_message = "Route called from IP 123.123.123.123 using MockAgent/1.0"
+            self.assertIn(expected_message, call_args[1]["data"])
+
+    @patch("requests.post")
+    def test_send_notification_with_user_logging_disabled(self, mock_post):
+        config_data = """
+        Notifications:
+          notifications_enabled: true
+          log_user: false
+          NtfyUrl: 'http://ntfy.sh'
+          NtfyTopic: 'test_topic'
+        """
+        with patch('builtins.open', mock_open(read_data=config_data)):
+            manager = NotificationManager.getInstance(reload_config=True)
+            manager.send_notification("Route called", self.mock_request)
+            mock_post.assert_called_once()
+            call_args = mock_post.call_args
+            self.assertEqual("Route called", call_args[1]["data"])
 
 
 # Run the tests
