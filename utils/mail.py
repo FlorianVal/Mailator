@@ -199,11 +199,11 @@ class MailHandler(object):
 
         index = list(map(lambda x: x.get("mail_address"),
                      self.managed_address)).index(mail_address)
-        if type(self.managed_address[index].get("mails")) is dict and len(list(self.managed_address[index].get("mails").keys())) == 1:
+        if isinstance(self.managed_address[index].get("mails"), dict) and len(list(self.managed_address[index].get("mails").keys())) == 1:
             # No mail in box
             logging.error("No mail in inbox")
             return None
-        elif type(self.managed_address[index].get("mails")) is list:
+        elif isinstance(self.managed_address[index].get("mails"), list):
             logging.debug(
                 f"mail returned : {self.managed_address[index].get('mails')[-1]}")
             return self.managed_address[index].get("mails")[-1]
