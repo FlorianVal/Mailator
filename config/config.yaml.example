@@ -15,3 +15,7 @@ Web:
     LastName: ""
     Mail0: ""
     Mail1: ""
+Notifications:
+  notifications_enabled: true
+  NtfyUrl: ""
+  NtfyTopic: ""
