@@ -1,6 +1,6 @@
 *.yaml
-logs\ 
-utils\__pycache__\
+logs/
+utils/__pycache__/
 *.log
 *.pyc
-__pycache__\
+__pycache__/
