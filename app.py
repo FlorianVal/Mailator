@@ -14,11 +14,12 @@ logging.config.dictConfig(config)
 app = Flask(__name__)
 mail_handler = MailHandler.getInstance()
 web_scraper = webScrap.getInstance()
+notification_manager = NotificationManager.getInstance()
 
 
 @app.route("/")
 def getMail():
-
+    notification_manager.send_notification("Route GetMail called")
     address = mail_handler.GetRandomMailAddress()
     web_scraper.submitForms(address)
     last_mail = mail_handler.WaitForMail(address)
