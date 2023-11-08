@@ -211,8 +211,8 @@ class MailHandler(object):
     def HtmlFromMail(self, mail):
         try:
             html = mail.get("mail_html")
-        except AttributeError:
-            raise AttributeError("Invalid mail to parse")
+        except AttributeError as err:
+            raise AttributeError("Invalid mail to parse") from err
         return html
 
     def __purgeManagedAddress(self):
