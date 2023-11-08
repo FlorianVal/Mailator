@@ -37,12 +37,16 @@ class NotificationManager:
                 )
             return yaml_content.get("Notifications")
 
-    def send_notification(self, message):
+    def send_notification(self, message, request=None):
         if self.config.get("notifications_enabled", False):
-            if not all(key in self.config for key in self._required_config_keys):
-                raise ValueError(
-                    f"Invalid config file {self.config_path}. Missing keys {self._required_config_keys}"
-                )
+            if not all(key in self.config for key in ["NtfyUrl", "NtfyTopic"]):
+                raise ValueError("Invalid config file: Missing 'NtfyUrl' or 'NtfyTopic' keys")
+
+            # If log_user is enabled and the request object is provided, append details to message
+            if self.config.get("log_user", False) and request:
+                user_info = f" from IP {request.remote_addr} using {request.user_agent.string}"
+                message += user_info
+
             ntfy_url = self.config.get("NtfyUrl")
             topic = self.config.get("NtfyTopic")
             complete_url = f"{ntfy_url}/{topic}"
