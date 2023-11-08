@@ -77,7 +77,7 @@ class webScrap(object):
 
         self.__newSession()
 
-        if type(self.config.get("Urls")) is list:
+        if isinstance(self.config.get("Urls"), list):
             url = random.choice(self.config.get("Urls"))
         else:
             url = self.config.get("Urls")
