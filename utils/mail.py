@@ -19,13 +19,13 @@ class MailHandler(object):
     @staticmethod
     def getInstance():
         """Static Access Method"""
-        if MailHandler.__shared_instance == None:
+        if MailHandler.__shared_instance is None:
             MailHandler()
         return MailHandler.__shared_instance
 
     def __init__(self):
         """virtual private constructor"""
-        if MailHandler.__shared_instance != None:
+        if MailHandler.__shared_instance is not None:
             raise Exception("This class is a singleton class !")
         else:
             MailHandler.__shared_instance = self

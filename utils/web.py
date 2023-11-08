@@ -14,13 +14,13 @@ class webScrap(object):
     @staticmethod
     def getInstance():
         """Static Access Method"""
-        if webScrap.__shared_instance == None:
+        if webScrap.__shared_instance is None:
             webScrap()
         return webScrap.__shared_instance
 
     def __init__(self):
         """virtual private constructor"""
-        if webScrap.__shared_instance != None:
+        if webScrap.__shared_instance is not None:
             raise Exception("This class is a singleton class !")
         else:
             webScrap.__shared_instance = self
