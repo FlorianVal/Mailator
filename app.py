@@ -2,7 +2,7 @@ import logging
 import logging.config
 
 import yaml
-from flask import Flask
+from flask import Flask, request
 
 from utils.mail import MailHandler
 from utils.notifications import NotificationManager
@@ -21,7 +21,7 @@ notification_manager = NotificationManager.getInstance()
 
 @app.route("/")
 def getMail():
-    notification_manager.send_notification("Route GetMail called")
+    notification_manager.send_notification("Route GetMail called", request)
     address = mail_handler.GetRandomMailAddress()
     web_scraper.submitForms(address)
     last_mail = mail_handler.WaitForMail(address)
