@@ -52,4 +52,13 @@ class NotificationManager:
             topic = self.config.get("NtfyTopic")
             complete_url = f"{ntfy_url}/{topic}"
             logging.info(f"Sending notification to {complete_url}")
-            requests.post(complete_url, data=message, timeout=5)
+            resp = requests.post(
+                complete_url,
+                data=message,
+                headers={"Authorization": f"Bearer {self.config.get('NtfyToken', '')}"},
+                timeout=5,
+            )
+            if resp.status_code != 200:
+                logging.error(
+                    f"Error sending notification to {complete_url}: {resp.status_code} - {resp.text}"
+                )
