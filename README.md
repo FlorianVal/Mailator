@@ -38,10 +38,10 @@ Start the application:
 ```bash
 python app.py
 ```
-#Usage
+# Usage
 
 Access the application via http://localhost (when running locally) or through the appropriate URL (when deployed).
 
-#Contributing
+# Contributing
 
 Contributions to Mailator are welcome! Feel free to fork the repository, make changes, and submit pull requests.
